@@ -12,7 +12,7 @@ import com.parse.ParseQuery;
 
 public class FeedFragment extends Fragment {
 
-    public final String TAG = getClass().getSimpleName();
+    private final String TAG = getClass().getSimpleName();
 
     public FeedFragment() {
         // Required empty public constructor

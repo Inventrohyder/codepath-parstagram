@@ -32,8 +32,8 @@ public class LoginActivity extends AppCompatActivity {
         Button btLogin = findViewById(R.id.login);
         btLogin.setOnClickListener(
                 view -> loginUser(
-                        mEtUsername.getText().toString(),
-                        mEtPassword.getText().toString()
+                        mEtUsername.getText().toString().trim(),
+                        mEtPassword.getText().toString().trim()
                 )
         );
 

@@ -41,9 +41,6 @@ public class PostFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-//        queryPosts();
     }
 
     @Override
