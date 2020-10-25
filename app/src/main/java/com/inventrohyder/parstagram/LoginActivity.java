@@ -22,6 +22,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        if (ParseUser.getCurrentUser() != null) {
+            goToMainActivity();
+        }
+
         mEtUsername = findViewById(R.id.username);
         mEtPassword = findViewById(R.id.password);
 
@@ -53,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     private void goToMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
+        finish();
     }
 
 }
