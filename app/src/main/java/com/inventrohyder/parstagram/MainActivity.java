@@ -3,6 +3,7 @@ package com.inventrohyder.parstagram;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -15,6 +16,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -34,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-
+        bottomNavigationView.setSelectedItemId(R.id.action_feed);
     }
 
 }
