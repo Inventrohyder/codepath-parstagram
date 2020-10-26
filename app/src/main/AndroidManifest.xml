@@ -9,7 +9,6 @@
         android:name=".ParseApplication"
         android:allowBackup="false"
         android:icon="@drawable/ic_instagram"
-        android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Parstagram">
         <activity android:name=".MainActivity" />

@@ -15,6 +15,7 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="titleEnabled">false</item>
     </style>
 
     <style name="Widget.App.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
