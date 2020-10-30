@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.parse.ParseQuery;
 
@@ -23,6 +24,7 @@ public class FeedFragment extends Fragment {
     private RecyclerView mRvPosts;
     private PostAdapter mPostAdapter;
     private List<Post> mPostList;
+    private SwipeRefreshLayout mSwipecontainer;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -44,6 +46,18 @@ public class FeedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mSwipecontainer = view.findViewById(R.id.swipeContainer);
+        // Configure the refreshing colors
+        mSwipecontainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        mSwipecontainer.setOnRefreshListener(() -> {
+            Log.i(TAG, "onRefresh: ");
+            queryPosts();
+        });
+
         mRvPosts = view.findViewById(R.id.rvPosts);
 
         mPostList = new ArrayList<>();
@@ -68,6 +82,7 @@ public class FeedFragment extends Fragment {
         query.findInBackground((posts, e) -> {
             if (e != null) {
                 Log.e(TAG, "done: Issue with getting posts", e);
+                mSwipecontainer.setRefreshing(false);
                 return;
             }
 
@@ -76,8 +91,9 @@ public class FeedFragment extends Fragment {
                         "Post desc: " + post.getDescription() + ", username: " + post.getUser().getUsername()
                 );
             }
-            mPostList.addAll(posts);
-            mPostAdapter.notifyDataSetChanged();
+            mPostAdapter.clear();
+            mPostAdapter.addAll(posts);
+            mSwipecontainer.setRefreshing(false);
         });
     }
 }
