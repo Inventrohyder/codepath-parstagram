@@ -23,4 +23,5 @@
     <string name="direct_message">Direct message</string>
     <string name="inbox">Inbox</string>
     <string name="action_register">Register</string>
+    <string name="profile_picture">Profile Picture</string>
 </resources>

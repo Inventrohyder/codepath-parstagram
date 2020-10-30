@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import java.util.List;
 
@@ -60,21 +61,38 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         private final TextView mTvUsername;
         private final ImageView mIvImage;
         private final TextView mTvDescription;
+        private final ImageView mIvProfile;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mTvUsername = itemView.findViewById(R.id.tvUsername);
             mIvImage = itemView.findViewById(R.id.ivPostImage);
             mTvDescription = itemView.findViewById(R.id.tvDescription);
+            mIvProfile = itemView.findViewById(R.id.ivProfile);
         }
 
         public void bind(Post post) {
             // Bind the post data to the view elements
             mTvDescription.setText(post.getDescription());
-            mTvUsername.setText(post.getUser().getUsername());
+            ParseUser user = post.getUser();
+            mTvUsername.setText(user.getUsername());
             ParseFile image = post.getImage();
             if (image != null) {
                 Glide.with(mContext).load(image.getUrl()).into(mIvImage);
+            }
+
+            ParseFile profilePicture = user.getParseFile("profilePicture");
+            if (profilePicture != null) {
+                Glide.with(mContext)
+                        .load(profilePicture.getUrl())
+                        .circleCrop()
+                        .fallback(R.drawable.default_profile)
+                        .into(mIvProfile);
+            } else {
+                Glide.with(mContext)
+                        .load(R.drawable.default_profile)
+                        .circleCrop()
+                        .into(mIvProfile);
             }
         }
     }
