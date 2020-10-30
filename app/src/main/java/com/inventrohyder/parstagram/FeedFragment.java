@@ -63,6 +63,8 @@ public class FeedFragment extends Fragment {
     private void queryPosts() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
+        query.setLimit(20);
+        query.addDescendingOrder(Post.KEY_CREATED_AT);
         query.findInBackground((posts, e) -> {
             if (e != null) {
                 Log.e(TAG, "done: Issue with getting posts", e);
