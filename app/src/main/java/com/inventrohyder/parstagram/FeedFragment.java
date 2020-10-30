@@ -6,13 +6,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.parse.ParseQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FeedFragment extends Fragment {
 
     private final String TAG = getClass().getSimpleName();
+    private RecyclerView mRvPosts;
+    private PostAdapter mPostAdapter;
+    private List<Post> mPostList;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -22,7 +32,6 @@ public class FeedFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        queryPosts();
     }
 
     @Override
@@ -30,6 +39,25 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_feed, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mRvPosts = view.findViewById(R.id.rvPosts);
+
+        mPostList = new ArrayList<>();
+        mPostAdapter = new PostAdapter(getContext(), mPostList);
+
+        // Steps to use the recycler view:
+        // 0. create the layout for one row in the list
+        // 1. create the adapter
+        // 2. create the data source
+        // 3. set the adapter on the recycler view
+        mRvPosts.setAdapter(mPostAdapter);
+        // 4. set the layout manager on the recycler view
+        mRvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+        queryPosts();
     }
 
     private void queryPosts() {
@@ -46,6 +74,8 @@ public class FeedFragment extends Fragment {
                         "Post desc: " + post.getDescription() + ", username: " + post.getUser().getUsername()
                 );
             }
+            mPostList.addAll(posts);
+            mPostAdapter.notifyDataSetChanged();
         });
     }
 }
