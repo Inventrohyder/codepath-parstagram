@@ -70,7 +70,7 @@ public class RegisterFragment extends Fragment {
         });
 
         Button btnLogin = view.findViewById(R.id.btnLogin);
-        btnLogin.setOnClickListener(view1 -> ((LoginActivity) Objects.requireNonNull(getActivity())).replaceFragments(new RegisterFragment()));
+        btnLogin.setOnClickListener(view1 -> ((LoginActivity) Objects.requireNonNull(getActivity())).replaceFragments(new LoginFragment()));
     }
 
     public void registerUser(String username, String password) {
