@@ -28,16 +28,14 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@+id/tvDescription"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/ivProfile"
-        app:layout_constraintTop_toBottomOf="@+id/ivPostImage"
-        tools:text="Post description" />
+    <Button
+        android:id="@+id/btnComments"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/ufi_comment"
+        app:layout_constraintStart_toEndOf="@+id/cbLike"
+        app:layout_constraintTop_toTopOf="@+id/cbLike" />
 
     <TextView
         android:id="@+id/tvUsername"
@@ -47,4 +45,50 @@
         app:layout_constraintStart_toEndOf="@+id/ivProfile"
         app:layout_constraintTop_toTopOf="@+id/ivProfile"
         tools:text="rahul" />
+
+
+    <Button
+        android:id="@+id/btnDirect"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/direct"
+        app:layout_constraintStart_toEndOf="@+id/btnComments"
+        app:layout_constraintTop_toTopOf="@+id/cbLike" />
+
+    <CheckBox
+        android:id="@+id/cbLike"
+        style="@style/Widget.App.CheckBox.Heart"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:button="@drawable/ufi_heart_icon"
+        app:layout_constraintStart_toStartOf="@+id/ivProfile"
+        app:layout_constraintTop_toBottomOf="@+id/ivPostImage" />
+
+    <CheckBox
+        android:id="@+id/cbBookmark"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:button="@drawable/ufi_save_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivPostImage" />
+
+
+    <TextView
+        android:id="@+id/tvDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/ivProfile"
+        app:layout_constraintTop_toBottomOf="@+id/cbLike"
+        tools:text="Post description" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

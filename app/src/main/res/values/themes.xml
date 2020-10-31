@@ -20,10 +20,19 @@
         <item name="bottomNavigationStyle">
             @style/Widget.MaterialComponents.BottomNavigationView.Colored
         </item>
+        <item name="checkboxStyle">@style/Widget.App.CheckBox</item>
     </style>
 
     <style name="Widget.App.Button" parent="Widget.MaterialComponents.Button">
         <item name="materialThemeOverlay">@style/ThemeOverlay.Parstagram.Alternate.DarkNight</item>
+    </style>
+
+    <style name="Widget.App.CheckBox" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="buttonTint">@color/check_button_tint</item>
+    </style>
+
+    <style name="Widget.App.CheckBox.Heart" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="buttonTint">@color/heart_button_tint</item>
     </style>
 
     <!-- APP theme -->

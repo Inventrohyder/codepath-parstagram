@@ -1,4 +1,10 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- APP theme -->
+    <style name="Theme.Parstagram" parent="Theme.Base.Parstagram">
+        <!-- Light Theme Customizations -->
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+    </style>
 
     <style name="ThemeOverlay.Parstagram.Alternate.DarkNight" parent="">
         <item name="colorPrimary">@color/white</item>
