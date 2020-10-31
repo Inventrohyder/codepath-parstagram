@@ -38,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:menu="@menu/app_bar"
+            app:layout_scrollFlags="scroll|enterAlways"
             app:navigationIcon="@drawable/camera_shadow_fill">
 
                 <ImageView
