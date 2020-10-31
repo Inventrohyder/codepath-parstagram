@@ -40,23 +40,14 @@
             app:menu="@menu/app_bar"
             app:navigationIcon="@drawable/camera_shadow_fill">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_anchor="@+id/appBarLayout"
-                app:layout_anchorGravity="center">
-
                 <ImageView
-                    android:id="@+id/imageView2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/instagram_landing_logo"
                     android:padding="16dp"
                     app:srcCompat="@drawable/instagram_landing_logo" />
-
-            </RelativeLayout>
 
         </com.google.android.material.appbar.MaterialToolbar>
 
