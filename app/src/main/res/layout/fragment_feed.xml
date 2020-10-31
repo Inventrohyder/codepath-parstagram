@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:menu="@menu/app_bar"
+            app:menu="@menu/feed_app_bar"
             app:navigationIcon="@drawable/camera_shadow_fill">
 
             <ImageView

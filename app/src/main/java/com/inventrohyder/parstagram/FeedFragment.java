@@ -3,6 +3,8 @@ package com.inventrohyder.parstagram;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -52,7 +54,7 @@ public class FeedFragment extends Fragment {
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        setHasOptionsMenu(true);
         if (savedInstanceState == null) {
             mPostList = new ArrayList<>();
         } else {
@@ -174,5 +176,11 @@ public class FeedFragment extends Fragment {
             }
             mSwipeContainer.setRefreshing(false);
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.feed_app_bar, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }
