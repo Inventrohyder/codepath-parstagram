@@ -59,7 +59,7 @@ public class FeedFragment extends Fragment {
                 android.R.color.holo_red_light);
         mSwipeContainer.setOnRefreshListener(() -> {
             Log.i(TAG, "onRefresh: ");
-            queryPosts();
+            queryNewerPosts();
         });
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -68,7 +68,7 @@ public class FeedFragment extends Fragment {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 Log.i(TAG, "onLoadMore: " + page);
-                queryMorePosts();
+                queryOlderPosts();
             }
         };
         // Add scroll listener to RecyclerView
@@ -85,16 +85,21 @@ public class FeedFragment extends Fragment {
         mRvPosts.setAdapter(mPostAdapter);
         // 4. set the layout manager on the recycler view
         mRvPosts.setLayoutManager(layoutManager);
-        queryPosts();
+        queryNewerPosts();
     }
 
-    private void queryMorePosts() {
-
+    private void queryOlderPosts() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        if (mPostList.size() > 0) {
+            Post oldestPost = mPostList.get(mPostList.size() - 1);
+            query.whereLessThanOrEqualTo(Post.KEY_CREATED_AT, oldestPost.getCreatedAt());
+            query.whereNotEqualTo(Post.KEY_USER, oldestPost.getUser().getObjectId());
+        }
+
         query.include(Post.KEY_USER);
         query.setLimit(QUERY_LIMIT);
         query.addDescendingOrder(Post.KEY_CREATED_AT);
-        query.whereLessThan(Post.KEY_CREATED_AT, mPostList.get(mPostList.size() - 1).getCreatedAt());
+
         query.findInBackground((posts, e) -> {
             if (e != null) {
                 Log.e(TAG, "done: Issue with getting more posts", e);
@@ -108,14 +113,23 @@ public class FeedFragment extends Fragment {
                 );
             }
 
-            mPostAdapter.addAll(posts);
+            if (posts.size() > 0) {
+                mPostList.addAll(posts);
+                mPostAdapter.notifyDataSetChanged();
+            }
+
             mSwipeContainer.setRefreshing(false);
         });
 
     }
 
-    private void queryPosts() {
+    private void queryNewerPosts() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        if (mPostList.size() > 0) {
+            Post newestPost = mPostList.get(0);
+            query.whereGreaterThanOrEqualTo(Post.KEY_CREATED_AT, newestPost.getCreatedAt());
+            query.whereNotEqualTo(Post.KEY_USER, newestPost.getUser().getObjectId());
+        }
         query.include(Post.KEY_USER);
         query.setLimit(QUERY_LIMIT);
         query.addDescendingOrder(Post.KEY_CREATED_AT);
@@ -131,8 +145,11 @@ public class FeedFragment extends Fragment {
                         "Post desc: " + post.getDescription() + ", username: " + post.getUser().getUsername()
                 );
             }
-            mPostAdapter.clear();
-            mPostAdapter.addAll(posts);
+
+            if (posts.size() > 0) {
+                mPostList.addAll(0, posts);
+                mPostAdapter.notifyDataSetChanged();
+            }
             mSwipeContainer.setRefreshing(false);
         });
     }
