@@ -3,6 +3,5 @@
 
     <item
         android:id="@+id/action_save"
-        android:icon="@drawable/ufi_save_icon"
-        android:title="@string/save_post" />
+        android:title="@string/report" />
 </menu>
