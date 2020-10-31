@@ -1,6 +1,7 @@
 package com.inventrohyder.parstagram;
 
 import android.content.Context;
+import android.text.Html;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,8 +77,9 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         public void bind(Post post) {
             // Bind the post data to the view elements
-            mTvDescription.setText(post.getDescription());
             ParseUser user = post.getUser();
+            String sourceString = "<b>" + user.getUsername() + "</b> " + post.getDescription();
+            mTvDescription.setText(Html.fromHtml(sourceString));
             mTvUsername.setText(user.getUsername());
             mTvCreated.setText(
                     DateUtils.getRelativeTimeSpanString(post.getCreatedAt().getTime(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
