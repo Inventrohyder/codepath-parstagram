@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FeedFragment extends Fragment {
 
@@ -63,6 +66,11 @@ public class FeedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Toolbar toolbar = view.findViewById(R.id.topAppBar);
+        AppCompatActivity activity = (AppCompatActivity) Objects.requireNonNull(getActivity());
+        activity.setSupportActionBar(toolbar);
+        Objects.requireNonNull(activity.getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         mSwipeContainer = view.findViewById(R.id.swipeContainer);
         mRvPosts = view.findViewById(R.id.rvPosts);
