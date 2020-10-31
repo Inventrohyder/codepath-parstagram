@@ -1,6 +1,7 @@
 package com.inventrohyder.parstagram;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,7 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         private final ImageView mIvImage;
         private final TextView mTvDescription;
         private final ImageView mIvProfile;
+        private final TextView mTvCreated;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -69,6 +71,7 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             mIvImage = itemView.findViewById(R.id.ivPostImage);
             mTvDescription = itemView.findViewById(R.id.tvDescription);
             mIvProfile = itemView.findViewById(R.id.ivProfile);
+            mTvCreated = itemView.findViewById(R.id.tvCreated);
         }
 
         public void bind(Post post) {
@@ -76,6 +79,9 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             mTvDescription.setText(post.getDescription());
             ParseUser user = post.getUser();
             mTvUsername.setText(user.getUsername());
+            mTvCreated.setText(
+                    DateUtils.getRelativeTimeSpanString(post.getCreatedAt().getTime(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
+            );
             ParseFile image = post.getImage();
             if (image != null) {
                 Glide.with(mContext).load(image.getUrl()).into(mIvImage);
