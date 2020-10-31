@@ -7,9 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -54,17 +54,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button btnLogOut = view.findViewById(R.id.btnLogOut);
-        btnLogOut.setOnClickListener(view1 -> ParseUser.logOutInBackground(e -> {
-            if (e != null) {
-                Log.e(TAG, "onViewCreated: Error Logging out", e);
-                Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            }
-            startActivity(new Intent(getContext(), LoginActivity.class));
-            Toast.makeText(getContext(), "User logged out!", Toast.LENGTH_SHORT).show();
-            Objects.requireNonNull(getActivity()).finish();
-        }));
-
         Toolbar toolbar = view.findViewById(R.id.profile_topAppBar);
 
         mActivity.setSupportActionBar(toolbar);
@@ -76,5 +65,27 @@ public class ProfileFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.profile_app_bar, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Handle item selection
+        if (item.getItemId() == R.id.action_log_out) {
+            logOut();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void logOut() {
+        ParseUser.logOutInBackground(e -> {
+            if (e != null) {
+                Log.e(TAG, "onViewCreated: Error Logging out", e);
+                Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+            startActivity(new Intent(getContext(), LoginActivity.class));
+            Toast.makeText(getContext(), "User logged out!", Toast.LENGTH_SHORT).show();
+            mActivity.finish();
+        });
     }
 }
