@@ -15,12 +15,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.parse.ParseQuery;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class FeedFragment extends Fragment {
 
     public static final int QUERY_LIMIT = 20;
+    public static final String KEY_POSTS = "POSTS";
     private final String TAG = getClass().getSimpleName();
     private RecyclerView mRvPosts;
     private PostAdapter mPostAdapter;
@@ -32,15 +35,27 @@ public class FeedFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("posts", (ArrayList<Post>) mPostList);
+    }
+
+    @Override
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if (savedInstanceState == null) {
+            mPostList = new ArrayList<>();
+        } else {
+            mPostList = savedInstanceState.getParcelableArrayList(KEY_POSTS);
+        }
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_feed, container, false);
     }
@@ -74,7 +89,6 @@ public class FeedFragment extends Fragment {
         // Add scroll listener to RecyclerView
         mRvPosts.addOnScrollListener(mScrollListener);
 
-        mPostList = new ArrayList<>();
         mPostAdapter = new PostAdapter(getContext(), mPostList);
 
         // Steps to use the recycler view:
