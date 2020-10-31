@@ -2,6 +2,7 @@ package com.inventrohyder.parstagram;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +23,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.util.Objects;
@@ -27,6 +37,10 @@ public class ProfileFragment extends Fragment {
 
     private final String TAG = getClass().getSimpleName();
     private AppCompatActivity mActivity;
+    private TextView mTvBio;
+    private ParseUser mCurrentUser;
+    private ImageView mIvProfile;
+    private ProgressBar mProgressBarProfile;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -36,6 +50,8 @@ public class ProfileFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mActivity = (AppCompatActivity) Objects.requireNonNull(getActivity());
+
+        mCurrentUser = ParseUser.getCurrentUser();
     }
 
     @Override
@@ -59,6 +75,60 @@ public class ProfileFragment extends Fragment {
         mActivity.setSupportActionBar(toolbar);
         ActionBar actionBar = Objects.requireNonNull(mActivity.getSupportActionBar());
         actionBar.setTitle(ParseUser.getCurrentUser().getUsername());
+
+        mTvBio = view.findViewById(R.id.tvBio);
+        mIvProfile = view.findViewById(R.id.ivProfile);
+        mProgressBarProfile = view.findViewById(R.id.progressProfilePicture);
+        mProgressBarProfile.setVisibility(View.VISIBLE);
+
+        mCurrentUser.fetchInBackground((object, e) -> {
+            if (e == null) {
+                updateUserData();
+            } else {
+                // Error
+                Log.e(TAG, "done: ", e);
+            }
+        });
+
+        showDefaultProfile();
+        updateUserData();
+    }
+
+    private void updateUserData() {
+        mTvBio.setText(mCurrentUser.getString("bio"));
+
+        ParseFile profilePicture = mCurrentUser.getParseFile("profilePicture");
+        if (profilePicture != null) {
+            Glide.with(this)
+                    .load(profilePicture.getUrl())
+                    .circleCrop()
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            mProgressBarProfile.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            mProgressBarProfile.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .fallback(R.drawable.default_profile)
+                    .into(mIvProfile);
+        } else {
+            // Set up default profile
+            showDefaultProfile();
+            mProgressBarProfile.setVisibility(View.GONE);
+        }
+    }
+
+    private void showDefaultProfile() {
+        Glide.with(this)
+                .load(R.drawable.default_profile)
+                .circleCrop()
+                .into(mIvProfile);
     }
 
     @Override
