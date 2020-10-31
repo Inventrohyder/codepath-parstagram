@@ -1,40 +1,8 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.Parstagram" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
+<resources>
+
+    <style name="ThemeOverlay.Parstagram.Alternate.DarkNight" parent="">
         <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryVariant">@color/white</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/pink_200</item>
-        <item name="colorSecondaryVariant">@color/pink_200</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <item name="colorOnPrimarySurface">@color/dark_grey</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/dark_grey</item>
-        <!-- Customize your theme here. -->
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="titleEnabled">false</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="Widget.App.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>
-    </style>
-
-    <style name="ThemeOverlay.App.Toolbar" parent="">
-        <item name="colorPrimary">@color/dark_grey</item>
-        <item name="colorOnPrimary">@color/white</item>
-    </style>
-
-    <style name="Widget.App.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
-    </style>
-
-    <style name="ThemeOverlay.App.BottomNavigationView" parent="">
-        <item name="colorPrimary">@color/dark_grey</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/dark_grey</item>
     </style>
 
 </resources>

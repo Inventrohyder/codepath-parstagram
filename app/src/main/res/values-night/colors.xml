@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary brand color. -->
+    <color name="colorOnPrimary">@color/white</color>
+    <color name="colorPrimary">@color/dark_grey</color>
+    <color name="colorPrimaryVariant">@color/dark_grey</color>
+</resources>
