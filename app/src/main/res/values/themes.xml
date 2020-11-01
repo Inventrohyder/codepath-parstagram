@@ -21,6 +21,7 @@
             @style/Widget.MaterialComponents.BottomNavigationView.Colored
         </item>
         <item name="checkboxStyle">@style/Widget.App.CheckBox</item>
+        <item name="tabStyle">@style/Widget.App.TabLayout</item>
     </style>
 
     <style name="Widget.App.Button" parent="Widget.MaterialComponents.Button">
@@ -33,6 +34,10 @@
 
     <style name="Widget.App.CheckBox.Heart" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
         <item name="buttonTint">@color/heart_button_tint</item>
+    </style>
+
+    <style name="Widget.App.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Parstagram.Alternate.DarkNight</item>
     </style>
 
     <!-- APP theme -->
