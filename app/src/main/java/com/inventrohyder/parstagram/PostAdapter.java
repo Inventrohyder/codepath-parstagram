@@ -23,6 +23,7 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     private final Context mContext;
     private final List<Post> mPosts;
+    private final String PAYLOAD_LIKES_COUNT = "payload_likes_count";
 
     public PostAdapter(Context context, List<Post> posts) {
         mContext = context;
@@ -43,6 +44,29 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty()) {
+            final Post post = mPosts.get(position);
+            for (final Object payload : payloads) {
+
+                if (payload.equals(PAYLOAD_LIKES_COUNT)) {
+                    // in this case only like will be updated
+                    holder.mTvLikesCount.setText(mContext.getResources()
+                            .getQuantityString(R.plurals.numberOfLikes, post.getLikesCount(), post.getLikesCount())
+                    );
+
+                    holder.mCbLike.setChecked(post.getIsLiked());
+                }
+
+            }
+        } else {
+            // in this case regular onBindViewHolder will be called
+            super.onBindViewHolder(holder, position, payloads);
+        }
+
+    }
+
+    @Override
     public int getItemCount() {
         return mPosts.size();
     }
@@ -55,6 +79,7 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         private final ImageView mIvProfile;
         private final TextView mTvCreated;
         private final CheckBox mCbLike;
+        private final TextView mTvLikesCount;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,6 +89,7 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             mIvProfile = itemView.findViewById(R.id.ivProfile);
             mTvCreated = itemView.findViewById(R.id.tvCreated);
             mCbLike = itemView.findViewById(R.id.cbLike);
+            mTvLikesCount = itemView.findViewById(R.id.tvLikes);
         }
 
         public void bind(Post post, int position) {
@@ -94,12 +120,18 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                         .into(mIvProfile);
             }
 
-            mCbLike.setChecked(post.getLiked());
+            mCbLike.setChecked(post.getIsLiked());
             mCbLike.setOnClickListener(view -> {
                 CheckBox checkBox = (CheckBox) view;
-                post.setLiked(checkBox.isChecked(), true);
-//                notifyItemChanged(position);
+                post.setIsLiked(checkBox.isChecked(), true);
+                notifyItemChanged(position, PAYLOAD_LIKES_COUNT);
             });
+
+            int likesCount = post.getLikesCount();
+            mTvLikesCount.setText(
+                    mContext.getResources()
+                            .getQuantityString(R.plurals.numberOfLikes, likesCount, likesCount)
+            );
         }
     }
 }

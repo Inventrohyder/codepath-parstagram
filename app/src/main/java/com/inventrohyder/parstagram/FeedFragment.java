@@ -198,12 +198,12 @@ public class FeedFragment extends Fragment {
                 .getFirstInBackground((object, e) -> {
                     if (e == null) {
                         // User exists in relation
-                        post.setLiked(true, false);
+                        post.setIsLiked(true, false);
                         mPostAdapter.notifyItemChanged(mPostList.indexOf(post));
                     } else {
                         if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
                             // User doesn't exist in relation
-                            post.setLiked(false, false);
+                            post.setIsLiked(false, false);
                             mPostAdapter.notifyItemChanged(mPostList.indexOf(post));
                         } else {
                             // Another error

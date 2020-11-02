@@ -14,6 +14,7 @@ public class Post extends ParseObject {
     public static final String KEY_IMAGE = "image";
     public static final String KEY_USER = "user";
     public static final String KEY_CREATED_AT = "createdAt";
+    public static final String KEY_LIKES_COUNT = "likesCount";
 
     private final String TAG = getClass().getSimpleName();
 
@@ -44,20 +45,26 @@ public class Post extends ParseObject {
         put(KEY_USER, user);
     }
 
-    public void setLiked(boolean liked, boolean isUpdate) {
+    public int getLikesCount() {
+        return getInt(KEY_LIKES_COUNT);
+    }
+
+    public void setIsLiked(boolean liked, boolean isUpdate) {
         if (isUpdate) {
             ParseRelation<ParseObject> relation = this.getRelation(Post.KEY_LIKED_BY);
             if (liked) {
                 relation.add(ParseUser.getCurrentUser());
+                this.increment(KEY_LIKES_COUNT);
             } else {
                 relation.remove(ParseUser.getCurrentUser());
+                this.increment(KEY_LIKES_COUNT, -1);
             }
             this.saveEventually();
         }
         isLiked = liked;
     }
 
-    public boolean getLiked() {
+    public boolean getIsLiked() {
         return isLiked;
     }
 }
