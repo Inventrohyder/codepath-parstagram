@@ -1,6 +1,9 @@
 package com.inventrohyder.parstagram;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.os.Handler;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -71,6 +74,7 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        public static final int DOUBLE_CLICK_DELAY_MILLIS = 300;
         private final TextView mTvUsername;
         private final ImageView mIvImage;
         private final TextView mTvDescription;
@@ -78,6 +82,8 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         private final TextView mTvCreated;
         private final CheckBox mCbLike;
         private final TextView mTvLikesCount;
+        private final ImageView mLike;
+        private int clicks = 0;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,6 +94,7 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             mTvCreated = itemView.findViewById(R.id.tvCreated);
             mCbLike = itemView.findViewById(R.id.cbLike);
             mTvLikesCount = itemView.findViewById(R.id.tvLikes);
+            mLike = itemView.findViewById(R.id.ivLike);
         }
 
         public void bind(Post post, int position) {
@@ -130,6 +137,54 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     mContext.getResources()
                             .getQuantityString(R.plurals.numberOfLikes, likesCount, likesCount)
             );
+
+
+            mIvImage.setOnClickListener(view -> {
+                clicks++;
+
+                Handler handler = new Handler();
+                handler.postDelayed(
+                        () -> {
+                            // When it is a double click
+                            // make the post liked
+                            if (clicks == 2) {
+                                if (!mCbLike.isChecked()) {
+                                    // If the post is not liked yet,
+                                    // make it liked
+                                    // otherwise maintain it as liked
+                                    mCbLike.performClick();
+                                }
+                                animateLike();
+                            }
+                            clicks = 0;
+                        }, DOUBLE_CLICK_DELAY_MILLIS);
+            });
+        }
+
+        private void animateLike() {
+
+            // Set the content view to 0% opacity but visible, so that it is visible
+            // (but fully transparent) during the animation.
+            mLike.setScaleX(0f);
+            mLike.setScaleY(0f);
+            mLike.setVisibility(View.VISIBLE);
+
+            // Animate the content view to 100% opacity, After the animation ends,
+            // set its visibility to GONE as an optimization step (it won't
+            // participate in layout passes, etc.)
+            mLike.animate()
+                    .scaleX(1)
+                    .scaleY(1)
+                    // animate the scaling of the like
+                    .setDuration(DOUBLE_CLICK_DELAY_MILLIS)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            // Wait for a while before making the like disappear
+                            mLike.postDelayed(() -> mLike.setVisibility(View.GONE), DOUBLE_CLICK_DELAY_MILLIS);
+                        }
+                    });
+
         }
     }
 }
