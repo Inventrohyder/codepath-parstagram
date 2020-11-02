@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,7 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,11 +33,10 @@ public class FeedFragment extends Fragment {
     public static final int QUERY_LIMIT = 20;
     public static final String KEY_POSTS = "POSTS";
     private final String TAG = getClass().getSimpleName();
-    private RecyclerView mRvPosts;
     private PostAdapter mPostAdapter;
     private List<Post> mPostList;
     private SwipeRefreshLayout mSwipeContainer;
-    private EndlessRecyclerViewScrollListener mScrollListener;
+    private ProgressBar mProgressBar;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -75,7 +77,9 @@ public class FeedFragment extends Fragment {
         Objects.requireNonNull(activity.getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         mSwipeContainer = view.findViewById(R.id.swipeContainer);
-        mRvPosts = view.findViewById(R.id.rvPosts);
+        RecyclerView rvPosts = view.findViewById(R.id.rvPosts);
+
+        mProgressBar = view.findViewById(R.id.progressBar);
 
         // Configure the refreshing colors
         mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -89,7 +93,7 @@ public class FeedFragment extends Fragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-        mScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 Log.i(TAG, "onLoadMore: " + page);
@@ -97,7 +101,7 @@ public class FeedFragment extends Fragment {
             }
         };
         // Add scroll listener to RecyclerView
-        mRvPosts.addOnScrollListener(mScrollListener);
+        rvPosts.addOnScrollListener(scrollListener);
 
         mPostAdapter = new PostAdapter(getContext(), mPostList);
 
@@ -106,9 +110,9 @@ public class FeedFragment extends Fragment {
         // 1. create the adapter
         // 2. create the data source
         // 3. set the adapter on the recycler view
-        mRvPosts.setAdapter(mPostAdapter);
+        rvPosts.setAdapter(mPostAdapter);
         // 4. set the layout manager on the recycler view
-        mRvPosts.setLayoutManager(layoutManager);
+        rvPosts.setLayoutManager(layoutManager);
         queryNewerPosts();
     }
 
@@ -121,6 +125,7 @@ public class FeedFragment extends Fragment {
         }
 
         query.include(Post.KEY_USER);
+        query.include(Post.KEY_LIKED_BY);
         query.setLimit(QUERY_LIMIT);
         query.addDescendingOrder(Post.KEY_CREATED_AT);
 
@@ -135,6 +140,9 @@ public class FeedFragment extends Fragment {
                 Log.i(TAG,
                         "Post desc: " + post.getDescription() + ", username: " + post.getUser().getUsername()
                 );
+
+                updateIsPostLiked(post);
+
             }
 
             if (posts.size() > 0) {
@@ -155,6 +163,7 @@ public class FeedFragment extends Fragment {
             query.whereNotEqualTo(Post.KEY_USER, newestPost.getUser().getObjectId());
         }
         query.include(Post.KEY_USER);
+        query.include(Post.KEY_LIKED_BY);
         query.setLimit(QUERY_LIMIT);
         query.addDescendingOrder(Post.KEY_CREATED_AT);
         query.findInBackground((posts, e) -> {
@@ -168,14 +177,40 @@ public class FeedFragment extends Fragment {
                 Log.i(TAG,
                         "Post desc: " + post.getDescription() + ", username: " + post.getUser().getUsername()
                 );
+
+                updateIsPostLiked(post);
             }
 
             if (posts.size() > 0) {
                 mPostList.addAll(0, posts);
                 mPostAdapter.notifyDataSetChanged();
             }
+
+            mProgressBar.setVisibility(View.GONE);
             mSwipeContainer.setRefreshing(false);
         });
+    }
+
+    private void updateIsPostLiked(Post post) {
+        post.getRelation(Post.KEY_LIKED_BY)
+                .getQuery()
+                .whereEqualTo("objectId", ParseUser.getCurrentUser().getObjectId())
+                .getFirstInBackground((object, e) -> {
+                    if (e == null) {
+                        // User exists in relation
+                        post.setLiked(true, false);
+                        mPostAdapter.notifyItemChanged(mPostList.indexOf(post));
+                    } else {
+                        if (e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                            // User doesn't exist in relation
+                            post.setLiked(false, false);
+                            mPostAdapter.notifyItemChanged(mPostList.indexOf(post));
+                        } else {
+                            // Another error
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
     @Override

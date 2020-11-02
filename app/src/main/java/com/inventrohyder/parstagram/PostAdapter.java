@@ -6,6 +6,7 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,7 +39,7 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Post post = mPosts.get(position);
-        holder.bind(post);
+        holder.bind(post, position);
     }
 
     @Override
@@ -53,6 +54,7 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         private final TextView mTvDescription;
         private final ImageView mIvProfile;
         private final TextView mTvCreated;
+        private final CheckBox mCbLike;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -61,9 +63,10 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             mTvDescription = itemView.findViewById(R.id.tvDescription);
             mIvProfile = itemView.findViewById(R.id.ivProfile);
             mTvCreated = itemView.findViewById(R.id.tvCreated);
+            mCbLike = itemView.findViewById(R.id.cbLike);
         }
 
-        public void bind(Post post) {
+        public void bind(Post post, int position) {
             // Bind the post data to the view elements
             ParseUser user = post.getUser();
             String sourceString = "<b>" + user.getUsername() + "</b> " + post.getDescription();
@@ -90,6 +93,13 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                         .circleCrop()
                         .into(mIvProfile);
             }
+
+            mCbLike.setChecked(post.getLiked());
+            mCbLike.setOnClickListener(view -> {
+                CheckBox checkBox = (CheckBox) view;
+                post.setLiked(checkBox.isChecked(), true);
+//                notifyItemChanged(position);
+            });
         }
     }
 }
