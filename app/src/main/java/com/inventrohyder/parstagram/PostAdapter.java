@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
@@ -100,9 +101,15 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         public void bind(Post post, int position) {
             // Bind the post data to the view elements
             ParseUser user = post.getUser();
-            String sourceString = "<b>" + user.getUsername() + "</b> " + post.getDescription();
+            String username = null;
+            try {
+                username = user.fetchIfNeeded().getUsername();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            String sourceString = "<b>" + username + "</b> " + post.getDescription();
             mTvDescription.setText(Html.fromHtml(sourceString));
-            mTvUsername.setText(user.getUsername());
+            mTvUsername.setText(username);
             mTvCreated.setText(
                     DateUtils.getRelativeTimeSpanString(post.getCreatedAt().getTime(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
             );
