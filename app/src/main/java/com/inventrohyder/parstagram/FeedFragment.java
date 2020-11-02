@@ -1,6 +1,8 @@
 package com.inventrohyder.parstagram;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +23,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.livequery.ParseLiveQueryClient;
+import com.parse.livequery.SubscriptionHandling;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +41,8 @@ public class FeedFragment extends Fragment {
     private List<Post> mPostList;
     private SwipeRefreshLayout mSwipeContainer;
     private ProgressBar mProgressBar;
+
+    ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
 
     public FeedFragment() {
         // Required empty public constructor
@@ -129,6 +135,8 @@ public class FeedFragment extends Fragment {
         query.setLimit(QUERY_LIMIT);
         query.addDescendingOrder(Post.KEY_CREATED_AT);
 
+        subscribeToPosts(query);
+
         query.findInBackground((posts, e) -> {
             if (e != null) {
                 Log.e(TAG, "done: Issue with getting more posts", e);
@@ -155,6 +163,26 @@ public class FeedFragment extends Fragment {
 
     }
 
+    private void subscribeToPosts(ParseQuery<Post> query) {
+        SubscriptionHandling<Post> subscriptionHandling = parseLiveQueryClient.subscribe(query);
+
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.UPDATE, (query1, post) -> {
+            Log.i(TAG, "queryNewerPosts: " + post);
+            for (int i = 0; i < mPostList.size(); i++) {
+                Post oldPost = mPostList.get(i);
+                // HANDLING update event
+                if (oldPost.getObjectId().equals(post.getObjectId())) {
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    mPostList.set(i, post);
+                    int finalI = i;
+                    handler.post(() -> mPostAdapter.notifyItemChanged(finalI, PostAdapter.PAYLOAD_LIKES_COUNT));
+                    break;
+                }
+            }
+
+        });
+    }
+
     private void queryNewerPosts() {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         if (mPostList.size() > 0) {
@@ -166,6 +194,10 @@ public class FeedFragment extends Fragment {
         query.include(Post.KEY_LIKED_BY);
         query.setLimit(QUERY_LIMIT);
         query.addDescendingOrder(Post.KEY_CREATED_AT);
+
+
+        subscribeToPosts(query);
+
         query.findInBackground((posts, e) -> {
             if (e != null) {
                 Log.e(TAG, "done: Issue with getting posts", e);

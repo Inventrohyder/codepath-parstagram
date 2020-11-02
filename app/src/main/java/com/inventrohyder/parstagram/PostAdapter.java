@@ -21,9 +21,9 @@ import java.util.List;
 
 class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
+    static final String PAYLOAD_LIKES_COUNT = "payload_likes_count";
     private final Context mContext;
     private final List<Post> mPosts;
-    private final String PAYLOAD_LIKES_COUNT = "payload_likes_count";
 
     public PostAdapter(Context context, List<Post> posts) {
         mContext = context;
@@ -54,8 +54,6 @@ class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     holder.mTvLikesCount.setText(mContext.getResources()
                             .getQuantityString(R.plurals.numberOfLikes, post.getLikesCount(), post.getLikesCount())
                     );
-
-                    holder.mCbLike.setChecked(post.getIsLiked());
                 }
 
             }
